@@ -12,21 +12,21 @@ pipeline {
 			}
 		}
 
-        stage('Configure') {
-            steps {
+		stage('Configure') {
+			steps {
 				dir('ci-cd-test') {
-					sh 'cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=build/generators/conan_toolchain.cmake'
+					sh 'cmake --preset conan-release'
 				}
 			}
-        }
+		}
 
-        stage('Build') {
-            steps {
+		stage('Build') {
+			steps {
 				dir('ci-cd-test') {
-					sh 'cmake --build build'
+					sh 'cmake --build --preset conan-release'
 				}
 			}
-        }
+		}
 
         stage('Test') {
             steps {
