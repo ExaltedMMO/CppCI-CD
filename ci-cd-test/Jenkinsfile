@@ -3,12 +3,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/ExaltedMMO/CppCI-CD'
-            }
-        }
-
         stage('Install Conan Dependencies') {
             steps {
                 sh 'pip install conan'
