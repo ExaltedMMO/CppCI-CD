@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/ExaltedMMO/CppCI-CD'
+            }
+        }
+
+        stage('Install Conan Dependencies') {
+            steps {
+                sh 'pip install conan'
+                sh 'conan profile detect --force'
+                sh 'conan install . --build=missing'
+            }
+        }
+
+        stage('Configure') {
+            steps {
+                sh 'cmake . -B build -DCMAKE_TOOLCHAIN_FILE=build/conan_toolchain.cmake'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'cmake --build build'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'cd build && ctest --output-on-failure'
+            }
+        }
+    }
+}
