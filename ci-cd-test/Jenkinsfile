@@ -1,21 +1,24 @@
 pipeline {
+    agent {
+        docker {
+            image 'conanio/gcc12'
+            args '-u root'
+        }
+    }
 
-	agent {
-			docker { image 'python:3' }
-		}
     stages {
 
         stage('Install Conan Dependencies') {
             steps {
                 sh 'pip install conan'
                 sh 'conan profile detect --force'
-                sh 'conan install . --build=missing'
+                sh 'conan install . --output-folder=build --build=missing'
             }
         }
 
         stage('Configure') {
             steps {
-                sh 'cmake . -B build -DCMAKE_TOOLCHAIN_FILE=build/conan_toolchain.cmake'
+                sh 'cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=build/generators/conan_toolchain.cmake'
             }
         }
 
@@ -27,7 +30,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'cd build && ctest --output-on-failure'
+                sh 'ctest --test-dir build'
             }
         }
     }
