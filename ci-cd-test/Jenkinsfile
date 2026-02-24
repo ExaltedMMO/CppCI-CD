@@ -5,6 +5,7 @@ pipeline {
 
         stage('Install Conan Dependencies') {
             steps {
+				sh 'cd ci-cd-test'
                 sh 'conan profile detect --force'
                 sh 'conan install . --output-folder=build --build=missing'
             }
