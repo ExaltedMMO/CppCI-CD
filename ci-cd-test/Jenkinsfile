@@ -31,7 +31,6 @@ pipeline {
         stage('Test') {
             steps {
 				dir('ci-cd-test') {
-					sh 'chmod -R 777 build'
 					sh 'ctest --test-dir build/build/Release'
 				}
 			}
