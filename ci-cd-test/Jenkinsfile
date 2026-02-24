@@ -3,32 +3,37 @@ pipeline {
 
     stages {
 
-        stage('Install Conan Dependencies') {
-            steps {
-				sh '''
-					cd ci-cd-test
-					conan profile detect --force
-					conan install . --output-folder=build --build=missing
-				'''
-            }
-        }
+        stage('Install Dependencies') {
+			steps {
+				dir('ci-cd-test') {
+					sh 'conan profile detect --force'
+					sh 'conan install . --output-folder=build --build=missing'
+				}
+			}
+		}
 
         stage('Configure') {
             steps {
-                sh 'cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=build/generators/conan_toolchain.cmake'
-            }
+				dir('ci-cd-test') {
+					sh 'cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=build/generators/conan_toolchain.cmake'
+				}
+			}
         }
 
         stage('Build') {
             steps {
-                sh 'cmake --build build'
-            }
+				dir('ci-cd-test') {
+					sh 'cmake --build build'
+				}
+			}
         }
 
         stage('Test') {
             steps {
-                sh 'ctest --test-dir build'
-            }
+				dir('ci-cd-test') {
+					sh 'ctest --test-dir build'
+				}
+			}
         }
     }
 }
