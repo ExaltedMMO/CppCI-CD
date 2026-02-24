@@ -31,7 +31,7 @@ pipeline {
         stage('Test') {
             steps {
 				dir('ci-cd-test') {
-					sh 'ctest --test-dir build'
+					sh 'ctest --test-dir build/build/Release'
 				}
 			}
         }
